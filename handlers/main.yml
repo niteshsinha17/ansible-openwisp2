@@ -3,14 +3,33 @@
 ---
 
 - name: reload systemd
-  systemd: daemon_reload=yes
+  systemd:
+    daemon_reload: yes
   when: ansible_distribution_release in ['bionic'] and ansible_service_mgr == 'systemd'
 
 - name: reload supervisor
   command: supervisorctl reload
 
 - name: restart nginx
-  service: name=nginx state=restarted
+  service:
+    name: nginx
+    state: restarted
+
+- name: start postgresql
+  service:
+    name: postgresql
+    state: started
 
 - name: start redis
-  service: name=redis state=started
+  command:
+    name: redis
+    state: started
+
+- name: update-ca-certificates
+  shell: /usr/sbin/update-ca-certificates
+  when: ansible_os_family == "Debian"
+
+- name: restart freeradius
+  service:
+    name: freeradius
+    state: restarted

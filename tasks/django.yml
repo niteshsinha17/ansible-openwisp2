@@ -90,8 +90,8 @@
     group: "{{ www_group }}"
     mode: 0664
 
-- name: start redis
-  service: name=redis state=started
+- name: start redis for migration
+  meta: flush_handlers
 
 - name: migrate
   notify: reload supervisor
